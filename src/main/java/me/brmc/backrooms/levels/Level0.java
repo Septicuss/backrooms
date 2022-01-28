@@ -1,7 +1,7 @@
 package me.brmc.backrooms.levels;
 
 import me.brmc.backrooms.generator.Generatable;
-import me.brmc.backrooms.objects.Matrix;
+import me.brmc.backrooms.generator.object.Matrix;
 
 public class Level0 extends AbstractLevel implements Generatable {
 

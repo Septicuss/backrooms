@@ -1,4 +1,4 @@
-package me.brmc.backrooms.objects;
+package me.brmc.backrooms.generator.object;
 
 public class Matrix {
 
