@@ -15,7 +15,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<outputFolder>C:\Users\vbala\Desktop\BRMC\plugins</outputFolder>
+		<outputFolder>PATH TO PLUGINS FOLDER</outputFolder>
 	</properties>
 
 	<build>
