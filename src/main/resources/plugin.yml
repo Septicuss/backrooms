@@ -1,6 +1,6 @@
 name: Backrooms
 description: Backrooms
 version: 1.0
-main: me.brmc.backrooms
+main: me.brmc.backrooms.Backrooms
 
 api-version: 1.18
