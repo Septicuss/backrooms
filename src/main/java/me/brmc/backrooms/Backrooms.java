@@ -2,10 +2,12 @@ package me.brmc.backrooms;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.brmc.backrooms.commands.WorldCommand;
 import me.brmc.backrooms.generator.GeneratorManager;
 import me.brmc.backrooms.levels.LevelManager;
 import me.brmc.backrooms.resourcepack.ResourcePackManager;
 import me.brmc.backrooms.utils.ConfigUtils;
+import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 public class Backrooms extends JavaPlugin {
 
@@ -27,6 +29,8 @@ public class Backrooms extends JavaPlugin {
 		generatorManager = new GeneratorManager();
 		resourcePackManager = new ResourcePackManager(configUtils);
 
+		BukkitCommandHandler commandHandler = BukkitCommandHandler.create(this);
+		commandHandler.register(new WorldCommand());
 	}
 
 	@Override

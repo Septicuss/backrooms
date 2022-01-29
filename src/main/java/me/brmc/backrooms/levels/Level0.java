@@ -5,7 +5,7 @@ import me.brmc.backrooms.generator.object.Matrix;
 
 public class Level0 extends AbstractLevel implements Generatable {
 
-	private String levelName = this.getClass().getTypeName();
+	private String levelName = this.getClass().getSimpleName();
 	private String secondLevelName;
 	private String levelDescription;
 
