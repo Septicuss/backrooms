@@ -47,7 +47,7 @@ public class ResourcePackUpdater {
 
 	}
 
-	public void runUpdater(final UpdateStage stage) throws IOException {
+	public void runUpdateStage(final UpdateStage stage) throws IOException {
 
 		if (!isConnected()) {
 			out("- GitHub is not connected, aborting updater.");
@@ -71,7 +71,7 @@ public class ResourcePackUpdater {
 			out("- Changes in the repository detected, proceesing to download");
 			hash = ResourcePackGitHubUtils.getLatestHash(filesRepo);
 
-			runUpdater(UpdateStage.DOWNLOAD);
+			runUpdateStage(UpdateStage.DOWNLOAD);
 
 		}
 
@@ -87,7 +87,7 @@ public class ResourcePackUpdater {
 
 			out("- All files downloaded!");
 
-			runUpdater(UpdateStage.ZIP);
+			runUpdateStage(UpdateStage.ZIP);
 
 		}
 
@@ -103,7 +103,7 @@ public class ResourcePackUpdater {
 
 			out("- Zipping the resource pack...");
 
-			final File zippedPackFile = new File(mainPackDirectory, Constants.RESOURCE_PACK_NAME + ".zip");
+			final File zippedPackFile = new File(mainPackDirectory, Constants.RESOURCE_PACK_NAME);
 
 			if (zippedPackFile.exists()) {
 				zippedPackFile.delete();
@@ -117,14 +117,14 @@ public class ResourcePackUpdater {
 				return;
 			}
 
-			runUpdater(UpdateStage.UPLOAD);
+			runUpdateStage(UpdateStage.UPLOAD);
 
 		}
 
 		if (stage == UpdateStage.UPLOAD) {
 
 			final File mainPackDirectory = resourcePackInfoWrapper.getFile().getParentFile();
-			final File zippedPackFile = new File(mainPackDirectory, Constants.RESOURCE_PACK_NAME + ".zip");
+			final File zippedPackFile = new File(mainPackDirectory, Constants.RESOURCE_PACK_NAME);
 
 			final GHRepository hostRepo = connection.getGitHub().getRepository(Constants.HOST_REPOSITORY);
 			url = ResourcePackGitHubUtils.uploadPack(Constants.RESOURCE_PACK_NAME, hostRepo, zippedPackFile);
@@ -138,7 +138,7 @@ public class ResourcePackUpdater {
 	}
 
 	public void runUpdater() throws IOException {
-		runUpdater(UpdateStage.CHECK);
+		runUpdateStage(UpdateStage.CHECK);
 	}
 
 	public boolean isConnected() {

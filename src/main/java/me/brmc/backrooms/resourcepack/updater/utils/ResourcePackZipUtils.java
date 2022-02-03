@@ -11,20 +11,16 @@ import java.util.zip.ZipOutputStream;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ResourcePackZipUtils {
+import me.brmc.backrooms.Constants;
 
-	private static final boolean COMPRESS_JSON = true;
+public class ResourcePackZipUtils {
 
 	public static void zipDirectory(final File outputFile, final File directory) throws IOException {
 
 		final FileOutputStream fileOut = new FileOutputStream(outputFile);
 		final ZipOutputStream zipOut = new ZipOutputStream(fileOut);
 
-		try {
-			zipFile(directory, null, zipOut);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+		zipFile(directory, null, zipOut);
 
 		zipOut.close();
 		fileOut.close();
@@ -32,45 +28,39 @@ public class ResourcePackZipUtils {
 	}
 
 	public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-
 		if (fileToZip.isHidden()) {
 			return;
 		}
 
 		if (fileToZip.isDirectory()) {
 
+			final String directoryName = (fileName == null ? "" : fileName + "/");
+
 			if (fileName != null) {
 				zipOut.putNextEntry(new ZipEntry(fileName + (fileName.endsWith("/") ? "" : "/")));
 				zipOut.closeEntry();
 			}
 
-			File[] children = fileToZip.listFiles();
-			for (File childFile : children) {
-				zipFile(childFile, (fileName == null ? ("") : (fileName + "/")) + childFile.getName(), zipOut);
+			for (File childFile : fileToZip.listFiles()) {
+				final String childFileName = childFile.getName();
+				final String fullPath = directoryName + childFileName;
+
+				zipFile(childFile, fullPath, zipOut);
 			}
 
 			return;
 		}
-
-		final boolean isJson = fileName.contains("json") || fileName.contains("mcmeta");
 
 		final FileInputStream fileIn = new FileInputStream(fileToZip);
 		final ZipEntry zipEntry = new ZipEntry(fileName);
 
 		zipOut.putNextEntry(zipEntry);
 
-		if (isJson && COMPRESS_JSON) {
+		final boolean isJson = isJson(fileName);
+		final boolean shouldCompress = (isJson && Constants.COMPRESS_JSON);
 
-			final String data = Files.readString(fileToZip.toPath());
-
-			if (!data.isEmpty() && !data.isBlank()) {
-				ObjectMapper mapper = new ObjectMapper();
-				JsonNode jsonNode = mapper.readValue(data, JsonNode.class);
-
-				zipOut.write(jsonNode.toString().getBytes());
-				fileIn.close();
-				return;
-			}
+		if (shouldCompress && compressJson(fileToZip, fileIn, zipOut)) {
+			return;
 		}
 
 		byte[] bytes = new byte[1024];
@@ -80,6 +70,34 @@ public class ResourcePackZipUtils {
 		}
 
 		fileIn.close();
+	}
+
+	/**
+	 * @return Whether the compression was successful or not
+	 */
+	private static boolean compressJson(final File jsonFile, FileInputStream fileIn, ZipOutputStream zipOut)
+			throws IOException {
+		final String data = Files.readString(jsonFile.toPath());
+
+		if (data.isEmpty() || data.isBlank()) {
+			return false;
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = mapper.readValue(data, JsonNode.class);
+
+		zipOut.write(jsonNode.toString().getBytes());
+		fileIn.close();
+		return true;
+
+	}
+
+	private static boolean isJson(final String fileName) {
+		if (fileName == null || fileName.isEmpty() || fileName.isBlank()) {
+			return false;
+		}
+
+		return (fileName.contains("json") || fileName.contains("mcmeta"));
 	}
 
 }

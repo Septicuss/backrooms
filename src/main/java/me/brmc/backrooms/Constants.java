@@ -9,7 +9,8 @@ public class Constants {
 	public static final String TOKEN_KEY = "settings.token";
 	public static final String FILES_REPOSITORY = "backrooms-dev/backrooms-resourcepack";
 	public static final String HOST_REPOSITORY = "backrooms-dev/backrooms-host";
-	public static final String RESOURCE_PACK_NAME = "backrooms";
+	public static final String RESOURCE_PACK_NAME = "backrooms.zip";
+	public static final boolean COMPRESS_JSON = true;
 
 	// -- End --
 
