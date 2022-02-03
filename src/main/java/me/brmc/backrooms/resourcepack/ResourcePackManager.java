@@ -1,26 +1,67 @@
 package me.brmc.backrooms.resourcepack;
 
-import me.brmc.backrooms.utils.ConfigUtils;
+import java.io.IOException;
+
+import org.bukkit.Bukkit;
+
+import me.brmc.backrooms.Backrooms;
+import me.brmc.backrooms.resourcepack.updater.ResourcePackUpdater;
 
 public class ResourcePackManager {
 
-	// 1. Check if resourcepack needs to be updated
-	// 2.1 If it doesn't, don't do anything
-	// 2.2 If it does, continue
-	// 3. Backup the old resource pack files and zip into a separate backup folder
-	// 4. Download the latest files from GitHub repository backrooms-resourcepack
-	// 5. Optimize and zip the latest files from GitHub repository
-	// 6. Upload the latest zip to "backrooms-host" repository if it's validated and
-	// working, otherwise use backup
+	private FileConfigurationWrapper resourcePackInfoWrapper;
+	private ResourcePackUpdater updater;
 
-	private ConfigUtils configUtils;
+	public ResourcePackManager() {
 
-	public ResourcePackManager(final ConfigUtils configUtils) {
-		this.configUtils = configUtils;
+		initializeUpdater();
+		updateAsync();
+
 	}
 
-	public ConfigUtils getConfigUtils() {
-		return configUtils;
+	// Updater
+
+	public void initializeUpdater() {
+		this.resourcePackInfoWrapper = new FileConfigurationWrapper("pack", "packinfo");
+		this.updater = new ResourcePackUpdater(resourcePackInfoWrapper);
+	}
+
+	public void updateAsync() {
+
+		Bukkit.getScheduler().runTaskAsynchronously(Backrooms.get(), () -> {
+			update();
+		});
+
+	}
+
+	public void update() {
+
+		if (updater == null) {
+			return;
+		}
+
+		try {
+			out("-- Resource Pack Updater Running --");
+
+			updater.runUpdater();
+
+			out("-- Resource Pack Updater Finished --");
+		} catch (
+
+		IOException exception) {
+			out("x - Updater has failed");
+			exception.printStackTrace();
+		}
+	}
+
+	public String getResourcePackUrl() {
+		return updater.getUrl();
+	}
+
+	// Utility
+
+	private void out(String message) {
+		System.out.println(message);
 	}
 
 }

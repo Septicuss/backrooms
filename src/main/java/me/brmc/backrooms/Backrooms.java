@@ -27,7 +27,7 @@ public class Backrooms extends JavaPlugin {
 
 		levelManager = new LevelManager();
 		generatorManager = new GeneratorManager();
-		resourcePackManager = new ResourcePackManager(configUtils);
+		resourcePackManager = new ResourcePackManager();
 
 		BukkitCommandHandler commandHandler = BukkitCommandHandler.create(this);
 		commandHandler.register(new WorldCommand());
